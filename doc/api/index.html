@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 5.1.2">
+  <meta name="description" content="tilko_plugin API docs, for the Dart programming language.">
+  <title>tilko_plugin - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">tilko_plugin package</li>
+  </ol>
+  <div class="self-name">tilko_plugin</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="tilko_plugin">tilko_plugin</h1>
+<p><strong>Tilko에서 제공하는 "보안 모듈 스크래핑 API 서비스"를 Flutter에서도 사용할 수 있는 Plugin</strong></p>
+<ul>
+<li>건강 관련 API사용을 위해, PC에 있는 공동인증서를 모바일로 복사해주는 기능 제공</li>
+</ul>
+<blockquote>
+<p>Tilko : <a href="https://www.tilko.net/">https://www.tilko.net/</a><br>
+틸코블렛은 "초기 스타트업을 위한 손쉬운 보안 모듈 스크래핑 API 서비스"를 제공하는 슬로건 아래 복잡하고 어려운 보안 모듈 웹 사이트(공인인증서, 전자인증서 및 각종 보안 프로그램 탑재)의 스크래핑 API를 제공하는 회사입니다.</p>
+</blockquote><br>
+<p>| APIs          | Functions              |  내용                                                |  제공기관    | 
+| :-----------  | :--------------------: | :-------------------------------------------------  | --------- |<br>
+| 인증서 등록      | <code>callCertRegister</code>     | <em>국민건강보험공단에 인증서 등록을 할 수 있습니다. <br> 아래의 API들을 사용하기 위해서 최초 1회 공동인증서 등록을 하여야 합니다.</em> | 건강보험공단 |<br>
+| 건강검진내역     | <code>callHealthCheckInfo</code>  | <em>최근 10년간 건강보험공단에서 실시한 건강검진의 정보를 제공합니다.</em> | 건강보험공단 |<br>
+| 진료 및 투약 정보 | <code>callMedicalTreatment</code> | <em>진료 및 투약 정보를 확인할 수 있습니다.</em>                    | 건강보험공단 |</p><br>
+<h2 id="install">Install</h2>
+<h4 id="1-dependency-">1) Dependency 추가</h4>
+<p>pubspec.yaml의 dependencies에 작성</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  tilko_plugin: ^{latest version}
+</code></pre>
+<p>dependency 추가 후, <code>flutter pub get</code> 실행하기</p>
+<h4 id="2-dart-code-import">2) Dart code에 import</h4>
+<pre class="language-dart"><code class="language-dart">import 'package:tilko_plugin/tilko_plugin.dart';
+</code></pre><br>
+<h2 id="getting-start">Getting Start</h2>
+<h3 id="android"><code>Android</code></h3>
+<p><code>android/app/build.gradle</code> 에서 <code>compileSdkVersion 29</code>, <code>minSdkVersion 24</code>, <code>targetSdkVersion 29</code>로 설정</p>
+<pre class="language-gradle"><code class="language-gradle">android {
+    compileSdkVersion 29 //수정
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.example.plugin_example"
+        minSdkVersion 24 //수정
+        targetSdkVersion 29 //수정
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+</code></pre>
+<h3 id="ios"><code>iOS</code></h3>
+<p><code>ios - Podfile</code>에서 <code># platform :ios, '9.0'</code>를 <code>11 이상</code>으로 설정</p>
+<pre class="language-dart"><code>// ex)
+platform :ios, '11.0'
+</code></pre><br>
+<h2 id="plugin-">Plugin 사용법</h2>
+<h3 id="1--">1. 공동인증서 복사</h3>
+<h4 id="step-1--8--">step 1 ) 8자리 인증키 받아오기</h4>
+<ul>
+<li>호출 함수</li>
+</ul>
+<pre class="language-dart"><code class="language-dart">String key;
+key = await TilkoPlugin.getKey();
+</code></pre>
+<blockquote>
+<p>리턴값(key) 예시 : <code>12345678</code></p>
+</blockquote>
+<h4 id="step-2-----">step 2 ) 복사되어 존재하는 공동인증서 불러오기</h4>
+<ul>
+<li>호출 함수</li>
+</ul>
+<pre class="language-dart"><code class="language-dart">Map&lt;String, List&lt;String&gt;&gt; certMap = {};
+certMap = await TilkoPlugin.getCertificate(_platformVersion)
+</code></pre>
+<ul>
+<li>certMap Key&amp;Value</li>
+</ul>
+<p>| Key          | Value                  |<br>
+| :----------: | :--------------------: |<br>
+| <code>name</code>       | 공동인증서 소유자 이름 리스트 |<br>
+| <code>valid</code>      | 공동인증서 유효기간 리스트   |<br>
+| <code>filePath</code>   | 공동인증서 파일 경로 리스트  |</p><br>
+<h3 id="2-api-">2. API 호출</h3>
+<h4 id="step-1---api--setting">step 1 ) 사용할 API를 위한 Setting</h4>
+<ul>
+<li>발급받은 API-KEY를 위한 변수 선언</li>
+</ul>
+<blockquote>
+<p>ex) apiKey = 09594kf324p04tt0nn2weg453c8j2p9l	;<br>
+apiKey는 tilko에 가입하여 발급받을 수 있습니다.</p>
+</blockquote>
+<h4 id="step-2---api-body-list-map">step 2 ) 사용할 API의 body list Map생성</h4>
+<ul>
+<li>reference: <a href="https://tilko.net/Market">https://tilko.net/Market</a></li>
+</ul>
+<h4 id="step-3--api-">step 3 ) API 호출</h4>
+<ul>
+<li>호출 함수</li>
+</ul>
+<pre class="language-dart"><code class="language-dart">
+// 건강보험공단 인증서 등록 API
+jsonString1 = TilkoPlugin.callCertRegister(apiKey, certMap['filePath']![index], identityNumber, certPassword);
+
+// 건강검진내역 API
+jsonString2 = TilkoPlugin.callHealthCheckInfo(apiKey, certMap['filePath']![index], certPassword); 
+
+// 진료 및 투약 정보 API
+jsonString3 = TilkoPlugin.callMedicalTreatment(apiKey, certMap['filePath']![index], certPassword);  
+</code></pre>
+<blockquote>
+<p>API 호출 시 파라미터 설명</p>
+</blockquote>
+<p>| 변수                              | 설명    |<br>
+| :------------------------------- | :------------------------------------------ |<br>
+| <code>apiKey</code>                         | tilko에서 발급한 개인 APIKEY |<br>
+| <code>certMap['filePath']![index]</code>    | 사용할 공동인증서의 파일 경로 |<br>
+| <code>identityNumber</code>                 | 공동인증서 소유자의 주민등록번호  | 
+| <code>certPassword</code>                   | 공동인증서 비밀번호 |</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="tilko_plugin">
+  <span class="name"><a href="file-___Users_yeon-yejin_Desktop_%E1%84%8F%E1%85%A2%E1%86%B8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A9%E1%86%AB_Flutter_tilko_plugin_lib_tilko_plugin/file-___Users_yeon-yejin_Desktop_%E1%84%8F%E1%85%A2%E1%86%B8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A9%E1%86%AB_Flutter_tilko_plugin_lib_tilko_plugin-library.html">tilko_plugin</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li class="self-crumb">tilko_plugin package</li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">tilko_plugin</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="file-___Users_yeon-yejin_Desktop_%E1%84%8F%E1%85%A2%E1%86%B8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A9%E1%86%AB_Flutter_tilko_plugin_lib_tilko_plugin/file-___Users_yeon-yejin_Desktop_%E1%84%8F%E1%85%A2%E1%86%B8%E1%84%89%E1%85%B3%E1%84%90%E1%85%A9%E1%86%AB_Flutter_tilko_plugin_lib_tilko_plugin-library.html">tilko_plugin</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    tilko_plugin
+      0.0.1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
